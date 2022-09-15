@@ -8,7 +8,7 @@ endif
 # Default shell
 SHELL = /bin/bash
 
-.PHONY: example-1
+.PHONY: example-1 example-2 example-3 example-4
 
 ##@ Target
 help:  ## Display this help.
@@ -22,18 +22,36 @@ install-kind-linux: ## Install kind on Ubuntu
 	@chmod +x ./kind
 	@sudo mv ./kind /usr/local/bin/kind
 
-create-cluster: ## Create the kind cluster
+start: ## Create the kind cluster
 	@kind create cluster --config kind/cluster.yaml --name demo
 
-destroy-cluster: ## Destroy the kind cluster
+stop: ## Destroy the kind cluster
 	@kind delete cluster --name demo
 
-list-clusters: ## List the available clusters
+list: ## List the available clusters
 	@kind get clusters
 
-example-1: ## Run example-1
-	@kubectl apply -f example-1
+1: ## Run example-1
+	@kubectl apply -f example-1-pods
+
+2: ## Run example-2
+	@kubectl apply -f example-2-services
+
+3: ## Run example-3
+	@kubectl apply -f example-3-deployments
+
+4: ## Run example-4
+	@kubectl apply -f example-4-replicas
+
+5-recreate: ## Run example-5 with recreate strategy
+	@kubectl apply -f example-5-updates/svc.yaml
+	@kubectl apply -f example-5-updates/recreate
+
+5-rolling-update: ## Run example-5 with rolling update strategy
+	@kubectl apply -f example-5-updates/svc.yaml
+	@kubectl apply -f example-5-updates/rolling-update
 
 destroy-examples: ## Destroy all examples
-	@kubectl delete -f example-1 || true
+	@kubectl delete deploy hello || true
+	@kubectl delete svc hello || true
 

@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 40%
+      maxUnavailable: 30%
+  selector:
+    matchLabels:
+      app: hello
+  template:
+    metadata:
+      labels:
+        app: hello
+    spec:
+      containers:
+      - name: hello-from
+        image: pbitty/hello-from:latest
+        ports:
+          - name: http
+            containerPort: 80
